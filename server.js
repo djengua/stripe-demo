@@ -60,15 +60,16 @@ app.post("/create-payment-intent", async (req, res) => {
     }
 
     const customer = await stripe.customers.create();
-
-    console.log(customer);
-
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+      { customer: customer.id },
+      { apiVersion: '2025-03-23.acacia' }
+    );
 
     // Crear el Payment Intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
-      // customer,
+      customer: customer.id,
       description,
       automatic_payment_methods: {
         enabled: true,
@@ -79,7 +80,7 @@ app.post("/create-payment-intent", async (req, res) => {
 
     res.status(200).json({
         paymentIntent: paymentIntent.client_secret,
-        // ephemeralKey: ephemeralKey.secret,
+        ephemeralKey: ephemeralKey.secret,
         customer: customer.id,
         publishableKey: 'pk_test_51R5Z0pC4OhSGzK4Pgk4KZ4ZLrrhUiP7mpcAuRATE3CqilHbrIlHZuQZqE7a8Ak3A8SqwhlNviOA9j1af8U2yhdc500dg3IGVSO'
       });
