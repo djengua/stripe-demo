@@ -48,7 +48,7 @@ app.get("/create-payment-intent", (req, res) => {
 app.post("/create-payment-intent", async (req, res) => {
   try {
     console.log('yyy');
-    const { amount, currency, description } = req.body;
+    const { amount, currency, description, customer: cust } = req.body;
 
     console.log(amount, currency, description );
 
@@ -59,7 +59,7 @@ app.post("/create-payment-intent", async (req, res) => {
       });
     }
 
-    const customer = await stripe.customers.create();
+    const customer = await stripe.customers.create({ description: cust.id, name: cust.name });
     const ephemeralKey = await stripe.ephemeralKeys.create(
       { customer: customer.id },
       { apiVersion: '2025-02-24.acacia' }
