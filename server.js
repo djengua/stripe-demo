@@ -61,7 +61,8 @@ app.post("/create-payment-intent", async (req, res) => {
 
     const customer = await stripe.customers.create();
     const ephemeralKey = await stripe.ephemeralKeys.create(
-      { customer: customer.id }
+      { customer: customer.id },
+      { apiVersion: '2025-02-24.acacia' }
     );
 
     // Crear el Payment Intent
