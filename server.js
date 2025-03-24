@@ -12,7 +12,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Permite solicitudes de otros dominios
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json()); // Para procesar JSON en el cuerpo de las solicitudes
 
 async function getPayPalAccessToken() {
