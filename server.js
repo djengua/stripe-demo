@@ -96,6 +96,28 @@ app.post("/create-payment-intent", async (req, res) => {
   }
 });
 
+app.post('/create-payment', async (req, res) => {
+  try {
+    //const customer = await stripe.customers.create();
+    //const ephemeralKey = await stripe.ephemeralKeys.create(
+    //  {customer: customer.id},
+    //  {apiVersion: '2025-02-24.acacia'}
+    //);
+    const { amount, currency } = req.body;
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency,
+      payment_method_types: ['card'],
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret
+    });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+});
+
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
